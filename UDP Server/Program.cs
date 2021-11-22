@@ -16,6 +16,7 @@ namespace UDP_Server {
                 string data = ReadFromPort();
                 if (data != null) {
                     Console.WriteLine(data);
+                    DatabaseAccess.UploadDataToDatabase(new MotionSensorData(DateTime.Now), new MotionSensorTableInfo());
                 }
             }
         }
