@@ -8,22 +8,29 @@ using System.Threading.Tasks;
 namespace UDP_Server {
     public static class DatabaseAccess {
 
+#warning Should define which columns it inserts into, so it also works with tables with autoincrementing columns.
+        private static string SQLInsert(IData data, ITableInfo info) {
+            string re = $"INSERT INTO {info.TableName}" + "Values (";
+
+            for(int i=0; i<data.Data.Length; i++) {
+                re += $"@{data.Data[0]},";
+            }
+            re.Remove(0, re.Length - 1);
+            re += ")";
+
+            return re;
+        }
+
         /// <summary>
         /// Uploads the given data to the database of the table with the given info.
         /// </summary>
         /// <param name="data">The data to upload, should mirror the tuple of the table</param>
         /// <param name="info">Information and metadata about the destination table and it's database</param>
-        public static void UploadDataToDatabase(IData data, ITableInfo info) {
+        /// <returns>True if the SQL process completes without errors, otherwise false</returns>
+        public static async Task<bool> UploadDataToDatabaseAsync(IData data, ITableInfo info) {
             try {
                 using (SqlConnection connection = new SqlConnection(info.DataBase.ConnectionString)) {
-                    using (SqlCommand command = new SqlCommand(SQLInsert, connection)) {
-                        //command.Parameters.AddWithValue($"@{_relationalKeys[0]}", evt.Id); //not needed for tables that are auto indexed
-                        command.Parameters.AddWithValue($"@{_relationalAttributes[0]}", evt.Description);
-                        command.Parameters.AddWithValue($"@{_relationalAttributes[1]}", evt.Name);
-                        command.Parameters.AddWithValue($"@{_relationalAttributes[2]}", GetThemeToDatabase(evt.Theme));
-                        command.Parameters.AddWithValue($"@{_relationalAttributes[3]}", evt.StartTime);
-                        command.Parameters.AddWithValue($"@{_relationalAttributes[4]}", evt.StopTime.TimeOfDay.TotalMinutes - evt.StartTime.TimeOfDay.TotalMinutes);
-                        command.Parameters.AddWithValue($"@{_relationalAttributes[5]}", evt.RoomNr);
+                    using (SqlCommand command = new SqlCommand(SQLInsert(data, info), connection)) {
 
                         await command.Connection.OpenAsync();
 
@@ -31,14 +38,7 @@ namespace UDP_Server {
                         if (i != 1) {
                             return false;
                         } else {
-                            int evt_Id = await GetHighstId();
-                            bool re = true;
-                            foreach (int participant in evt.Speakers) {
-                                if (!await CreateSpeaker(evt_Id, participant)) {
-                                    re = false;
-                                }
-                            }
-                            return re;
+                            return true;
                         }
                     }
                 }
@@ -47,7 +47,7 @@ namespace UDP_Server {
                 Console.WriteLine(s);
                 Console.Beep();
             }
+            return false;
         }
-
     }
 }

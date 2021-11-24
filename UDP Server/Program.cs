@@ -16,7 +16,8 @@ namespace UDP_Server {
                 string data = ReadFromPort();
                 if (data != null) {
                     Console.WriteLine(data);
-                    DatabaseAccess.UploadDataToDatabase(new MotionSensorData(DateTime.Now), new MotionSensorTableInfo());
+
+                    SendData();
                 }
             }
         }
@@ -35,6 +36,15 @@ namespace UDP_Server {
                 //Console.Error.WriteLine(e);
             }
             return null;
+        }
+
+        private static async void SendData() {
+            bool success = await DatabaseAccess.UploadDataToDatabaseAsync(new MotionSensorData(DateTime.Now), new MotionSensorTableInfo());
+            if (success) {
+                Console.WriteLine("Successfully uploaded data from sensor");
+            } else {
+                Console.WriteLine("Failed to upload data from sensor");
+            }
         }
     }
 }
