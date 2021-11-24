@@ -8,20 +8,18 @@ namespace UDP_Server {
         public int Tempreture { get; set; }
         public int Windspeed { get; set; }
 
+        public object[] Data {
+            get {
+                return new object[] { DateTime, DrivingIntoTheParkingLot, Downfall, Tempreture, Windspeed };
+            }
+        }
+
         public MotionSensorData(DateTime time, bool drivingIn, int downfall, int tempreture, int windspeed) {
             this.DateTime = time;
             this.DrivingIntoTheParkingLot = drivingIn;
             this.Downfall = downfall;
             this.Tempreture = tempreture;
             this.Windspeed = windspeed;
-        }
-        /// <summary>
-        /// Testing constructor, please delete.
-        /// </summary>
-        /// <param name="time"></param>
-        [Obsolete]
-        public MotionSensorData(DateTime time) {
-            DateTime = time;
         }
     }
 }
