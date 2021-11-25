@@ -16,7 +16,8 @@ namespace UDP_Server
         private static int port = 7161;
 
         #region business values
-        
+
+        private static TimeSpan registrationConnectionLength = new TimeSpan(0, 3, 0);
         #endregion business values
 
         /// <summary>
@@ -88,10 +89,9 @@ namespace UDP_Server
             bool priorIs1 = prior.StartsWith('1');
             bool currentIs2 = current.StartsWith('2');
             if (priorIs1 == currentIs2) {
-                
-                
-                if() { 
-                
+                if(currentTime - priorTime > registrationConnectionLength)
+                {
+                    return true;
                 }
             }
 
