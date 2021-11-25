@@ -15,6 +15,10 @@ namespace UDP_Server
         private static IPAddress ip = IPAddress.Any;
         private static int port = 7161;
 
+        #region business values
+        
+        #endregion business values
+
         /// <summary>
         /// Denne metode returnerer tid og bilens retning, repræsenteret i en string.
         /// Vi forventer hvis der står 1 i vores string, er det yderste målepunkt - hvorimod står der 2 i vores string, forventer vi det er inderste målepunkt.
@@ -27,24 +31,70 @@ namespace UDP_Server
         public static string CarRegistration()
         {
             string priorSensorRegistration = null;
+            bool DrivingIn = false;
 
             while (true)
             {
                 string currentSensorRegistration = ReadFromPort();
 
-                if (priorSensorRegistration == null || !RelevantRegistration(priorSensorRegistration, currentSensorRegistration))
+                DateTime priorTime = DateTime.MinValue;
+                DateTime currentTime = DateTime.MinValue;
+                if (priorSensorRegistration != null) {
+                    priorTime = DateTime.Parse(priorSensorRegistration.Remove(0, 3).Remove(19));
+                    currentTime = DateTime.Parse(currentSensorRegistration.Remove(0, 3).Remove(19));
+                }
+
+                if (priorSensorRegistration == null || !RelevantRegistration(priorSensorRegistration, currentSensorRegistration, priorTime, currentTime))
                 {
                     priorSensorRegistration = currentSensorRegistration;
                     continue;
                 }
 
-                DateTime priorTime = DateTime.Parse(priorSensorRegistration.Remove(0, 3).Remove(26));
+                if(currentTime - priorTime > TimeSpan.Zero) {
+                    if(currentSensorRegistration.StartsWith('1') && priorSensorRegistration.StartsWith('2')) {
+                        DrivingIn = false;
+                    } else if(currentSensorRegistration.StartsWith('2') && priorSensorRegistration.StartsWith('1')) {
+                        DrivingIn = true;
+                    } else {
+#warning please make proper exception.
+                        throw new Exception("Something went wrong.");
+                    }
+                }
+
+                string re = "";
+                if(DrivingIn) {
+                    re += "In;";
+                } else {
+                    re += "Out;";
+                }
+
+                re += currentTime;
+
+                return re;
             }
-            return null;
         }
 
-        private static bool RelevantRegistration(string prior, string current)
+        /// <summary>
+        /// A method designed to determine that the given registrations are relevant and make sense with each others context.
+        /// </summary>
+        /// <param name="prior"></param>
+        /// <param name="current"></param>
+        /// <param name="priorTime"></param>
+        /// <param name="currentTime"></param>
+        /// <returns></returns>
+        private static bool RelevantRegistration(string prior, string current, DateTime priorTime, DateTime currentTime)
         {
+            //If the sensors are different.
+            bool priorIs1 = prior.StartsWith('1');
+            bool currentIs2 = current.StartsWith('2');
+            if (priorIs1 == currentIs2) {
+                
+                
+                if() { 
+                
+                }
+            }
+
             return false;
         }
 
