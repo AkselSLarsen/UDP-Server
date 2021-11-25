@@ -8,27 +8,25 @@ using System.Threading.Tasks;
 namespace UDP_Server {
     public class Program {
 
-        //public static void Main(string[] args) {
-        //    while (true) {
+        public static void Main(string[] args) {
+            while (true) {
+                string data = DirectionChecker.CarRegistration();
+
+                if (data != null) {
+                    SendData(data);
+                }
+            }
+        }
+        //public static void Main(string[] args)
+        //{
+        //    while (true)
+        //    {
         //        string data = null;
 
-        //        string data = ReadFromPort();
-        //        if (data != null) {
-        //            SendData(data);
-        //        }
+        //        SendData(data);
         //        Thread.Sleep(60000);
         //    }
         //}
-        public static void Main(string[] args)
-        {
-            while (true)
-            {
-                string data = null;
-
-                SendData(data);
-                Thread.Sleep(60000);
-            }
-        }
 
         // Test af DirectionChecker
         //public static void Main(string[] args)
@@ -43,7 +41,7 @@ namespace UDP_Server {
 
             MotionSensorData data = null;
 
-            if (input == null) {
+            if (input == null) { //For testing purposes
                 data = new MotionSensorData(DateTime.Now, RandomDirection(), RandomDownfall(), RandomTemperature(), RandomWindspeed());
             } else {
                 data = DataIntepreter.ProcessData(input);
@@ -59,17 +57,17 @@ namespace UDP_Server {
             }
         }
 
-        private static int RandomWindspeed() {
+        public static int RandomWindspeed() {
             Random r = new Random();
             return r.Next(0, 12);
         }
 
-        private static int RandomTemperature() {
+        public static int RandomTemperature() {
             Random r = new Random();
             return r.Next(-25, 75);
         }
 
-        private static int RandomDownfall() {
+        public static int RandomDownfall() {
             Random r = new Random();
             return r.Next(0, 800);
         }
