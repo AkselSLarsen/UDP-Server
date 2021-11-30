@@ -39,13 +39,7 @@ namespace UDP_Server {
 
         private static void SendData(string input) {
 
-            MotionSensorData data = null;
-
-            if (input == null) { //For testing purposes
-                data = new MotionSensorData(DateTime.Now, RandomDirection(), RandomDownfall(), RandomTemperature(), RandomWindspeed());
-            } else {
-                data = DataIntepreter.ProcessData(input);
-            }
+            MotionSensorData data = DataIntepreter.ProcessData(input);
 
             Console.WriteLine(data);
 
@@ -54,30 +48,6 @@ namespace UDP_Server {
                 Console.WriteLine("Successfully uploaded data from sensor");
             } else {
                 Console.WriteLine("Failed to upload data from sensor");
-            }
-        }
-
-        public static int RandomWindspeed() {
-            Random r = new Random();
-            return r.Next(0, 12);
-        }
-
-        public static int RandomTemperature() {
-            Random r = new Random();
-            return r.Next(-25, 75);
-        }
-
-        public static int RandomDownfall() {
-            Random r = new Random();
-            return r.Next(0, 800);
-        }
-
-        private static bool RandomDirection() {
-            Random r = new Random();
-            if(r.Next() % 2 == 0) {
-                return true;
-            } else {
-                return false;
             }
         }
     }
