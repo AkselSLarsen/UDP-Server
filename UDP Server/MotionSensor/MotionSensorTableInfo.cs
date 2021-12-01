@@ -1,6 +1,6 @@
 ﻿namespace UDP_Server {
     public class MotionSensorTableInfo : ITableInfo {
-        private MotionSensorDatabaseInfo _database;
+        private ParkingPiratesDatabaseInfo _database;
         private DataTypes[] _tupleData;
         private string _tableName;
         private string[] _columnNames;
@@ -28,7 +28,7 @@
         }
 
         public MotionSensorTableInfo() {
-            _database = new MotionSensorDatabaseInfo();
+            _database = new ParkingPiratesDatabaseInfo();
             _tupleData = new DataTypes[] { DataTypes.DateTime, DataTypes.BIT, DataTypes.INT, DataTypes.INT, DataTypes.INT };
             _tableName = "Log";
             _columnNames = new string[] { "Tidspunkt", "Retning", "Nedbør", "Temperatur", "Vindhastighed" };

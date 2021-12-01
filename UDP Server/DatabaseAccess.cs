@@ -46,7 +46,30 @@ namespace UDP_Server {
                     }
                 }
             } catch (Exception e) {
-                string s = e.StackTrace;
+                string s = e.Message;
+                Console.WriteLine(s);
+                Console.Beep();
+            }
+            return false;
+        }
+
+        public static bool RunCustomSQLScriptOnTable(string script, ITableInfo info) {
+            try {
+                using (SqlConnection connection = new SqlConnection(info.DataBase.ConnectionString)) {
+                    using (SqlCommand command = new SqlCommand(script, connection)) {
+
+                        command.Connection.Open();
+
+                        int i = command.ExecuteNonQuery();
+                        if (i != 1) {
+                            return false;
+                        } else {
+                            return true;
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                string s = e.Message;
                 Console.WriteLine(s);
                 Console.Beep();
             }

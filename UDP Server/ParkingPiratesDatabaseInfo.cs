@@ -1,5 +1,5 @@
 ﻿namespace UDP_Server {
-    public class MotionSensorDatabaseInfo : IDataBaseInfo {
+    public class ParkingPiratesDatabaseInfo : IDataBaseInfo {
         public string ConnectionString {
             get {
                 return "Data Source=(localdb)\\MSSQLLocaldb;Initial Catalog=EventMakerDB21;Integrated Security=True";
@@ -7,7 +7,7 @@
             }
         }
 
-        public MotionSensorDatabaseInfo() {
+        public ParkingPiratesDatabaseInfo() {
             
         }
 

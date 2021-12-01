@@ -29,6 +29,10 @@ namespace UDP_Server
         /// <returns></returns>
         public static void CarRegistration(string currentSensorRegistration)
         {
+
+#warning delete line below
+Console.WriteLine("MotionSensor:" + currentSensorRegistration);
+
             bool DrivingIn = false;
 
             DateTime priorTime = DateTime.MinValue;
@@ -63,7 +67,7 @@ namespace UDP_Server
 
                 message += currentTime;
 
-                Program.SendMotionData(message);
+                SendMotionData(message);
             }
         }
 
@@ -88,6 +92,20 @@ namespace UDP_Server
             }
 
             return false;
+        }
+
+        private static void SendMotionData(string input) {
+
+            MotionSensorData data = DataIntepreter.ProcessData(input);
+
+            Console.WriteLine(data);
+
+            bool success = DatabaseAccess.InsertToDatabase(data, new MotionSensorTableInfo());
+            if (success) {
+                Console.WriteLine("Successfully uploaded data from sensor");
+            } else {
+                Console.WriteLine("Failed to upload data from sensor");
+            }
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace UDP_Server
@@ -19,40 +20,39 @@ namespace UDP_Server
             {
                 Task.Run(() =>
                 {
-
                     string message = ReadFromPort();
 
                     if (message.Contains(": "))
                     {
                         DirectionChecker.CarRegistration(message);
                     }
-                    else if (message.Contains("; ")) 
+                    else if (message.Contains("q ")) 
                     {
                         ParkingManager.SpotRegistration(message);
                     }
-
                 });
+                Thread.Sleep(1);
             }
         }
 
         public static string ReadFromPort()
         {
-            try
-            {
-                UdpClient socket = new UdpClient();
-                socket.Client.Bind(new IPEndPoint(ip, port));
+            UdpClient socket = new UdpClient();
+            string dataString = null;
 
-                IPEndPoint from = null;
-                byte[] data = socket.Receive(ref from);
-                string dataString = Encoding.UTF8.GetString(data);
+            while(dataString == null) {
+                try {
+                    socket.Client.Bind(new IPEndPoint(ip, port));
 
-                return dataString;
+                    IPEndPoint from = null;
+                    byte[] data = socket.Receive(ref from);
+                    dataString = Encoding.UTF8.GetString(data);
+
+                } catch (Exception e) {
+                    //Console.Error.WriteLine(e);
+                }
             }
-            catch (Exception e)
-            {
-                //Console.Error.WriteLine(e);
-                return "";
-            }
+            return dataString;
         }
     }
 }
