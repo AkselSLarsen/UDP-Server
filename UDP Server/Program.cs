@@ -9,13 +9,7 @@ namespace UDP_Server {
     public class Program {
 
         public static void Main(string[] args) {
-            while (true) {
-                string data = DirectionChecker.CarRegistration();
-
-                if (data != null) {
-                    SendData(data);
-                }
-            }
+            UdpRedirector.UdpRecieve();
         }
         //public static void Main(string[] args)
         //{
@@ -37,13 +31,13 @@ namespace UDP_Server {
         //    Console.WriteLine(priorTime);
         //}
 
-        private static void SendData(string input) {
+        public static void SendMotionData(string input) {
 
             MotionSensorData data = DataIntepreter.ProcessData(input);
 
             Console.WriteLine(data);
 
-            bool success = DatabaseAccess.UploadDataToDatabase(data, new MotionSensorTableInfo());
+            bool success = DatabaseAccess.InsertToDatabase(data, new MotionSensorTableInfo());
             if (success) {
                 Console.WriteLine("Successfully uploaded data from sensor");
             } else {

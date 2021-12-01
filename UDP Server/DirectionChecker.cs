@@ -11,9 +11,7 @@ namespace UDP_Server
     public class DirectionChecker
     {
         // Denne class skal anvendes til at checke, om bilerne kører ind eller ud af parkeringspladsen.
-        
-        private static IPAddress ip = IPAddress.Any;
-        private static int port = 7161;
+        private static string priorSensorRegistration = null;
 
         #region business values
 
@@ -29,49 +27,43 @@ namespace UDP_Server
         /// "2: " Forventer vi kommer før DateTime på det inderste målepunkt.
         /// </summary>
         /// <returns></returns>
-        public static string CarRegistration()
+        public static void CarRegistration(string currentSensorRegistration)
         {
-            string priorSensorRegistration = null;
             bool DrivingIn = false;
 
-            while (true)
+            DateTime priorTime = DateTime.MinValue;
+            DateTime currentTime = DateTime.MinValue;
+            if (priorSensorRegistration != null) {
+                priorTime = DateTime.Parse(priorSensorRegistration.Remove(0, 3).Remove(19));
+                currentTime = DateTime.Parse(currentSensorRegistration.Remove(0, 3).Remove(19));
+            }
+
+            if (priorSensorRegistration == null || !RelevantRegistration(priorSensorRegistration, currentSensorRegistration, priorTime, currentTime))
             {
-                string currentSensorRegistration = ReadFromPort();
+                priorSensorRegistration = currentSensorRegistration;
+                return;
+            }
 
-                DateTime priorTime = DateTime.MinValue;
-                DateTime currentTime = DateTime.MinValue;
-                if (priorSensorRegistration != null) {
-                    priorTime = DateTime.Parse(priorSensorRegistration.Remove(0, 3).Remove(19));
-                    currentTime = DateTime.Parse(currentSensorRegistration.Remove(0, 3).Remove(19));
-                }
-
-                if (priorSensorRegistration == null || !RelevantRegistration(priorSensorRegistration, currentSensorRegistration, priorTime, currentTime))
-                {
-                    priorSensorRegistration = currentSensorRegistration;
-                    continue;
-                }
-
-                if(currentTime - priorTime > TimeSpan.Zero) {
-                    if(currentSensorRegistration.StartsWith('1') && priorSensorRegistration.StartsWith('2')) {
-                        DrivingIn = false;
-                    } else if(currentSensorRegistration.StartsWith('2') && priorSensorRegistration.StartsWith('1')) {
-                        DrivingIn = true;
-                    } else {
-#warning please make proper exception.
-                        throw new Exception("Something went wrong.");
-                    }
-                }
-
-                string re = "";
-                if(DrivingIn) {
-                    re += "In;";
+            if(currentTime - priorTime > TimeSpan.Zero) {
+                if(currentSensorRegistration.StartsWith('1') && priorSensorRegistration.StartsWith('2')) {
+                    DrivingIn = false;
+                } else if(currentSensorRegistration.StartsWith('2') && priorSensorRegistration.StartsWith('1')) {
+                    DrivingIn = true;
                 } else {
-                    re += "Out;";
+#warning please make proper exception.
+                    throw new Exception("Something went wrong.");
                 }
 
-                re += currentTime;
+                string message = "";
+                if(DrivingIn) {
+                    message += "In;";
+                } else {
+                    message += "Out;";
+                }
 
-                return re;
+                message += currentTime;
+
+                Program.SendMotionData(message);
             }
         }
 
@@ -96,28 +88,6 @@ namespace UDP_Server
             }
 
             return false;
-        }
-
-        public static string ReadFromPort()
-        {
-            while (true)
-            {
-                try
-                {
-                    UdpClient socket = new UdpClient();
-                    socket.Client.Bind(new IPEndPoint(ip, port));
-
-                    IPEndPoint from = null;
-                    byte[] data = socket.Receive(ref from);
-                    string dataString = Encoding.UTF8.GetString(data);
-
-                    return dataString;
-                }
-                catch (Exception e)
-                {
-                    //Console.Error.WriteLine(e);
-                }
-            }
         }
     }
 }

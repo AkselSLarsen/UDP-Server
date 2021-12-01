@@ -27,7 +27,7 @@ namespace UDP_Server {
         /// <param name="data">The data to upload, should mirror the tuple of the table</param>
         /// <param name="info">Information and metadata about the destination table and it's database</param>
         /// <returns>True if the SQL process completes without errors, otherwise false</returns>
-        public static bool UploadDataToDatabase(IData data, ITableInfo info) {
+        public static bool InsertToDatabase(IData data, ITableInfo info) {
             try {
                 using (SqlConnection connection = new SqlConnection(info.DataBase.ConnectionString)) {
                     using (SqlCommand command = new SqlCommand(SQLInsert(data, info), connection)) {
