@@ -60,7 +60,21 @@ namespace UDP_Server {
         }
 
         public static string GetDateForURL(DateTime dateTime) {
-            return $"{dateTime.Year}-{dateTime.Month}-{dateTime.Day}T{dateTime.ToString("HH:mm:ss")}Z";
+            return $"{dateTime.Year}-{GetMonth(dateTime)}-{GetDay(dateTime)}T{dateTime.ToString("HH:mm:ss")}Z";
+        }
+
+        public static string GetMonth(DateTime dateTime) {
+            if(dateTime.Month.ToString().Length == 1) {
+                return "0" + dateTime.Month;
+            }
+            return dateTime.Month.ToString();
+        }
+
+        public static string GetDay(DateTime dateTime) {
+            if (dateTime.Day.ToString().Length == 1) {
+                return "0" + dateTime.Day;
+            }
+            return dateTime.Day.ToString();
         }
     }
 }
