@@ -35,8 +35,6 @@ namespace UDP_Server
                                 messages.Dequeue();
                             }
 
-                            Console.WriteLine(message);
-
                             if (message.Contains(": ")) {
                                 DirectionChecker.CarRegistration(message);
                             } else if (message.Contains("q ")) {

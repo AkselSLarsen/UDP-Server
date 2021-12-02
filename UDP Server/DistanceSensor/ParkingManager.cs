@@ -13,7 +13,7 @@ namespace UDP_Server
             new bool[2],
             new bool[2]
         };
-        private static int lastCalculation = 0;
+        private static int lastCalculation = int.MinValue;
         private static DateTime lastUpdated = DateTime.MinValue;
 
         /// <summary>
@@ -53,12 +53,12 @@ Console.WriteLine("Distance Sensor:" + message);
                 throw new Exception("Somthing went wrong!!!");
             }
 
-            int count = CalculateAmountOfTakenSpots();
-            if(count != lastCalculation) {
-                lastCalculation = count;
+            DateTime now = DateTime.Now;
+            if (now > lastUpdated.AddMinutes(1)) {
 
-                DateTime now = DateTime.Now;
-                if(now > lastUpdated.AddMinutes(1)) {
+                int count = CalculateAmountOfTakenSpots();
+                if(count != lastCalculation) {
+                    lastCalculation = count;
                     lastUpdated = now;
 
                     DatabaseAccess.RunCustomSQLScriptOnTable(
