@@ -29,9 +29,9 @@
 
         public MotionSensorTableInfo() {
             _database = new ParkingPiratesDatabaseInfo();
-            _tupleData = new DataTypes[] { DataTypes.DateTime, DataTypes.BIT, DataTypes.INT, DataTypes.INT, DataTypes.INT };
+            _tupleData = new DataTypes[] { DataTypes.INT, DataTypes.DateTime, DataTypes.BIT, DataTypes.INT, DataTypes.INT, DataTypes.INT };
             _tableName = "Log";
-            _columnNames = new string[] { "Tidspunkt", "Retning", "Nedbør", "Temperatur", "Vindhastighed" };
+            _columnNames = new string[] { "OmrådeId", "Tidspunkt", "Retning", "Nedbør", "Temperatur", "Vindhastighed" };
         }
     }
 }

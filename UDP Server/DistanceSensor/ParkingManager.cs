@@ -16,6 +16,10 @@ namespace UDP_Server
         private static int lastCalculation = int.MinValue;
         private static DateTime lastUpdated = DateTime.MinValue;
 
+        #region Buisnes Value
+        private static int SecondsToWait = 2;
+        #endregion
+
         /// <summary>
         /// En metode som tager imod en streng fra en afstandssensor og bruger den til
         /// at udregne hvor mange pladser der er optagede.
@@ -54,18 +58,20 @@ Console.WriteLine("Distance Sensor:" + message);
             }
 
             DateTime now = DateTime.Now;
-            if (now > lastUpdated.AddMinutes(1)) {
+            if (now > lastUpdated.AddSeconds(SecondsToWait)) {
 
-                int count = CalculateAmountOfTakenSpots();
-                if(count != lastCalculation) {
-                    lastCalculation = count;
+#warning this should be refactored to ensure that data is only uploaded when something has changed.
+                //int count = CalculateAmountOfTakenSpots(0) + CalculateAmountOfTakenSpots(1) + CalculateAmountOfTakenSpots(2);
+                //if(count != lastCalculation) {
+                //lastCalculation = count;
+
                     lastUpdated = now;
 
                     DatabaseAccess.RunCustomSQLScriptOnTable(
                         SQLDistanceSensorUpdate(type, CalculateAmountOfTakenSpots(type)),
                         new DistanceSensorTableInfo()
                     );
-                }
+                //}
             }
         }
 
@@ -92,18 +98,6 @@ Console.WriteLine("Distance Sensor:" + message);
                 tmp[i] = spotsTaken[type][i];
             }
             spotsTaken[type] = tmp;
-        }
-
-        private static int CalculateAmountOfTakenSpots() {
-            int count = 0;
-            for(int type=0; type<spotsTaken.Length; type++) {
-                for(int id=0; id<spotsTaken[type].Length; id++) {
-                    if(spotsTaken[type][id]) {
-                        count++;
-                    }
-                }
-            }
-            return count;
         }
 
         private static int CalculateAmountOfTakenSpots(int type) {

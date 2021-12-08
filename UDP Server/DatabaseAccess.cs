@@ -9,7 +9,7 @@ namespace UDP_Server {
     public static class DatabaseAccess {
 
 #warning Should define which columns it inserts into, so it also works with tables with autoincrementing columns.
-        private static string SQLInsert(IData data, ITableInfo info) {
+        private static string SQLInsert(ITableInfo info) {
             string re = $"INSERT INTO {info.TableName}" + " Values (";
 
             for(int i=0; i<info.ColumnNames.Length; i++) {
@@ -30,7 +30,7 @@ namespace UDP_Server {
         public static bool InsertToDatabase(IData data, ITableInfo info) {
             try {
                 using (SqlConnection connection = new SqlConnection(info.DataBase.ConnectionString)) {
-                    using (SqlCommand command = new SqlCommand(SQLInsert(data, info), connection)) {
+                    using (SqlCommand command = new SqlCommand(SQLInsert(info), connection)) {
                         for(int j=0; j<info.ColumnNames.Length; j++) {
                             command.Parameters.AddWithValue($"@{info.ColumnNames[j]}", data.Data[j]);
                         }
@@ -46,8 +46,7 @@ namespace UDP_Server {
                     }
                 }
             } catch (Exception e) {
-                string s = e.Message;
-                Console.WriteLine(s);
+                Console.WriteLine(e.Message);
                 Console.Beep();
             }
             return false;

@@ -17,10 +17,13 @@ namespace UDP_Server {
             
             Time = DateTime.Parse(inputs[1]);
 
-            return new MotionSensorData(Time, DrivingIn, Downfall, Temperature, Windspeed);
+            return new MotionSensorData(Program.OmrådeID, Time, DrivingIn, Downfall, Temperature, Windspeed);
         }
 
+#warning needs work to work.
         public static int GetWindspeed() {
+            return 0;
+            /*
             string json = "";
             using (WebClient wc = new WebClient()) {
                 string url = "https://dmigw.govcloud.dk/v2/metObs/collections/observation/items?api-key=9c03456a-00ce-48db-a13b-907255c2eb73&stationId=06184&datetime=" + GetDateForURL(DateTime.Now.AddDays(-1)) + "/" + GetDateForURL(DateTime.Now) + "&" + "parameterId=wind_speed";
@@ -31,9 +34,13 @@ namespace UDP_Server {
             double re = double.Parse(value.Split("}")[0].Replace('.', ','));
 
             return Convert.ToInt32(re);
+            */
         }
 
+#warning needs work to work.
         public static int GetTemperature() {
+            return 0;
+            /*
             string json = "";
             using (WebClient wc = new WebClient()) {
                 string url = "https://dmigw.govcloud.dk/v2/metObs/collections/observation/items?api-key=9c03456a-00ce-48db-a13b-907255c2eb73&stationId=06184&datetime=" + GetDateForURL(DateTime.Now.AddDays(-1)) +"/"+ GetDateForURL(DateTime.Now) +"&" +"parameterId=temp_mean_past1h";
@@ -44,9 +51,13 @@ namespace UDP_Server {
             double re = double.Parse(value.Split("}")[0].Replace('.',','));
 
             return Convert.ToInt32(re);
+            */
         }
 
+#warning needs work to work.
         public static int GetDownfall() {
+            return 0;
+            /*
             string json = "";
             using (WebClient wc = new WebClient()) {
                 string url = "https://dmigw.govcloud.dk/v2/metObs/collections/observation/items?api-key=9c03456a-00ce-48db-a13b-907255c2eb73&stationId=06184&datetime=" + GetDateForURL(DateTime.Now.AddDays(-1)) + "/" + GetDateForURL(DateTime.Now) + "&" + "parameterId=precip_past1h";
@@ -57,6 +68,7 @@ namespace UDP_Server {
             double re = double.Parse(value.Split("}")[0].Replace('.', ','));
 
             return Convert.ToInt32(re);
+            */
         }
 
         public static string GetDateForURL(DateTime dateTime) {

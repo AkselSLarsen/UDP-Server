@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace UDP_Server {
     public class Program {
-        public static int OmrådeID = 0;
+        public static int OmrådeID = 1;
 
         public static void Main(string[] args) {
             UdpRedirector.UdpRecieve();

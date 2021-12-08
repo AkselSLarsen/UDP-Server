@@ -48,27 +48,25 @@ Console.WriteLine("MotionSensor:" + currentSensorRegistration);
                 return;
             }
 
-            if(currentTime - priorTime > TimeSpan.Zero) {
-                if(currentSensorRegistration.StartsWith('1') && priorSensorRegistration.StartsWith('2')) {
-                    DrivingIn = false;
-                } else if(currentSensorRegistration.StartsWith('2') && priorSensorRegistration.StartsWith('1')) {
-                    DrivingIn = true;
-                } else {
+            if(currentSensorRegistration.StartsWith('1') && priorSensorRegistration.StartsWith('2')) {
+                DrivingIn = false;
+            } else if(currentSensorRegistration.StartsWith('2') && priorSensorRegistration.StartsWith('1')) {
+                DrivingIn = true;
+            } else {
 #warning please make proper exception.
-                    throw new Exception("Something went wrong.");
-                }
-
-                string message = "";
-                if(DrivingIn) {
-                    message += "In;";
-                } else {
-                    message += "Out;";
-                }
-
-                message += currentTime;
-
-                SendMotionData(message);
+                throw new Exception("Something went wrong.");
             }
+
+            string message = "";
+            if(DrivingIn) {
+                message += "In;";
+            } else {
+                message += "Out;";
+            }
+
+            message += currentTime;
+
+            SendMotionData(message, currentSensorRegistration);
         }
 
         /// <summary>
@@ -94,7 +92,7 @@ Console.WriteLine("MotionSensor:" + currentSensorRegistration);
             return false;
         }
 
-        private static void SendMotionData(string input) {
+        private static void SendMotionData(string input, string currentSensorRegistration) {
 
             MotionSensorData data = DataIntepreter.ProcessData(input);
 
@@ -102,6 +100,7 @@ Console.WriteLine("MotionSensor:" + currentSensorRegistration);
 
             bool success = DatabaseAccess.InsertToDatabase(data, new MotionSensorTableInfo());
             if (success) {
+                priorSensorRegistration = currentSensorRegistration;
                 Console.WriteLine("Successfully uploaded data from sensor");
             } else {
                 Console.WriteLine("Failed to upload data from sensor");
